@@ -1,21 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import axios from 'axios';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
+function App() {
+  const [command, setCommand] = useState('');
+  const [response, setResponse] = useState('');
+
+  const handleVoiceCommand = async () => {
+    try {
+      const result = await axios.post('http://localhost:5000/voice-command', { command });
+      setResponse(result.data.response);
+    } catch (error) {
+      console.error('Error processing voice command:', error);
+    }
+  };
+
+  return (
+    <div className="App">
+      <h1>AI Personal Assistant</h1>
+      <input
+        type="text"
+        value={command}
+        onChange={(e) => setCommand(e.target.value)}
+      />
+      <button onClick={handleVoiceCommand}>Send Command</button>
+      <p>Response: {response}</p>
+    </div>
+  );
 }
 
 export default App;
